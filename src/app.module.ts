@@ -1,16 +1,13 @@
 import { Module } from '@nestjs/common';
 
-import { ApiGatewayModule } from './core/api-gateway/api-gateway.module';
-import { EventBridgeModule } from './core/event-bridge/event-bridge.module';
-import { SqsModule } from './core/sqs/sqs.module';
-import { TelegramModule } from './core';
+import { LookUpModule } from './core';
+import { TwitterModule } from './common';
+
 
 @Module({
 	imports: [
-		SqsModule,
-		EventBridgeModule,
-		ApiGatewayModule,
-		TelegramModule
+		LookUpModule,
+		TwitterModule,
 	],
 	providers: []
 })

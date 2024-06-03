@@ -7,7 +7,7 @@ export const CurrentLambdaInvocation = createParamDecorator(
 		const currentInvocation = getCurrentInvoke();
 		return {
 			event: currentInvocation?.event || null,
-			context: currentInvocation.context || null
+			context: currentInvocation?.context || null
 		};
 	}
 );

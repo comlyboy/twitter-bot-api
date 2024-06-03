@@ -2,3 +2,8 @@
   "extends": "./tsconfig.json",
   "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
 }
+// {
+//   "extends": "./tsconfig.json",
+//   "include": ["src/**/*"],
+//   "exclude": ["node_modules", "test", "cdk", "dist", "src/**/*.spec.ts", "**/*spec.ts"]
+// }

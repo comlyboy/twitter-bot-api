@@ -6,24 +6,31 @@ const { merge } = require("webpack-merge");
 const TerserPlugin = require("terser-webpack-plugin");
 const base = require("./webpack.base.js");
 
-console.log({ entries: slsw.lib.entries, stage: slsw.lib.options.stage });
+console.log('Build LOG => stage', slsw.lib.options.stage);
+
+/**
+ * @param {string} url
+ */
+function getFullPath(url) {
+	return path.resolve(__dirname, url);
+}
 
 const config = merge(base, {
-	mode: slsw.lib.options.stage === 'production' ? slsw.lib.options.stage : 'none',
-	entry: slsw.lib.entries,
+	mode: slsw.lib.options.stage === 'production' ? 'production' : 'none',
+	entry: getFullPath('src/serverless.ts'),
 	devtool: "source-map",
 	stats: 'minimal',
 	output: {
 		libraryTarget: "commonjs",
 		path: path.join(__dirname, ".webpack"),
-		filename: "[name].js",
+		filename: "serverless.js",
 	},
 	performance: {
 		// Turn off size warnings for entry points
 		hints: false
 	},
 	optimization: {
-		minimize: false,
+		minimize: true,
 		minimizer: [
 			new TerserPlugin({
 				terserOptions: {

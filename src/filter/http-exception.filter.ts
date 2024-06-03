@@ -1,7 +1,8 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 
 import { Request, Response } from 'express';
-import { IError } from '../common/error/entities/error.interface';
+import { ObjectType, ResponseMessageEnum } from 'src/common';
+
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -10,28 +11,33 @@ export class HttpExceptionFilter implements ExceptionFilter {
 		const http = host.switchToHttp();
 		const response = http.getResponse<Response>();
 		const { method, url } = http.getRequest<Request>();
-		let status = exception.getStatus();
-		let message = exception['response']['message'] as string || exception.message;
+		let statusCode = exception?.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR;
+		let message: string = (exception as ObjectType)?.response?.message || exception?.message || ResponseMessageEnum.INTERNAL_SERVER_ERROR;
 		if (Array.isArray(message)) {
 			message = JSON.stringify(message);
 		}
-		const errorResult: { error: IError } = {
-			error: {
-				timestamp: new Date().toISOString(),
-				method: method,
-				path: url,
-				message
-			}
+
+		if (statusCode > 499 && (message === '' || !message)) {
+			message = ResponseMessageEnum.INTERNAL_SERVER_ERROR
+		}
+
+		if (message === 'Unauthorized' && statusCode === HttpStatus.UNAUTHORIZED) {
+			statusCode = HttpStatus.UNAUTHORIZED;
+			message = ResponseMessageEnum.LOGIN_SESSION_EXPIRED;
+		}
+
+		const error = {
+			statusCode,
+			timestamp: new Date().toISOString(),
+			method,
+			path: url,
+			message
 		};
 
+		if (statusCode > 499 && statusCode < 600) {
+			console.log(`ERROR => ${JSON.stringify(error)}`);
+		}
 
-		// if (EnvironmentConfig.NODE_ENV !== DefinedAppEnvironmentEnum.DEVELOPMENT) {
-		// 	if (status > 499 && status < 600) {
-		// 		SendErrorToSlack({ ...errorResult.error });
-		// 	}
-		// }
-		console.log(`ERROR => ${JSON.stringify(errorResult)}`);
-
-		response.status(status)//.json(errorResult);
+		response.status(statusCode).json({ error });
 	}
 }
