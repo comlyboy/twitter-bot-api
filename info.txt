@@ -1,2 +1,5 @@
 https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_lambda-readme.html#event-rule-target
 https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigatewayv2.HttpApi.html
+https://docs.aws.amazon.com/cdk/v2/guide/assets.html#assets_types_s3
+https://docs.aws.amazon.com/lambda/latest/dg/typescript-package.html#aws-cdk-ts esbuild
+https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-rate-expressions.html
