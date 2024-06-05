@@ -1,5 +1,5 @@
 {
-  "app": "npx ts-node --prefer-ts-exts bin/init-twitter-bot-api.ts",
+  "app": "npx ts-node --prefer-ts-exts cdk/bin/init-twitter-bot-api.ts",
   "watch": {
     "include": [
       "**"

@@ -1,5 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
-import { TwitterBotApiLambdaStack } from 'cdk/lib/lambda.stack';
+import { TwitterBotApiLambdaStack } from '../lib/lambda.stack';
 
 const app = new cdk.App();
 new TwitterBotApiLambdaStack(app, 'TwitterBotApiHandler', {
