@@ -5,6 +5,9 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+	"bin": {
+		"twitter-bot-api": "bin/init-twitter-bot-api.js"
+	},
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -21,7 +24,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "serverless-prebuild": "npm run prebuild && rimraf .serverless && rimraf .webpack",
     "serverless-start:dev": "sls package --stage development && sls offline",
-    "serverless-build:staging": "sls package --stage staging --verbose",
+    "serverless-build:staging": "npm run build && sls package --stage staging --verbose",
     "serverless-build:production": "npm run build && sls package --stage production --verbose",
     "serverless-deploy:staging": "npm run build && sls deploy --stage staging --verbose",
     "serverless-deploy:production": "npm run build && sls deploy --stage production --verbose",
@@ -61,6 +64,8 @@
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^7.11.0",
     "@typescript-eslint/parser": "^7.11.0",
+    "aws-cdk-lib": "^2.144.0",
+    "constructs": "^10.3.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",

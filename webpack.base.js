@@ -22,14 +22,14 @@ const config = merge(base, {
 				loader: 'ts-loader',
 				exclude: /node_modules/,
 			},
-			{
-				test: /\.ts$/,
-				exclude: [
-					'/test/',
-					'/src/**/*.spec.ts',
-					'/**/*.spec.ts'
-				]
-			}
+			// {
+			// 	test: /\.ts$/,
+			// 	exclude: [
+			// 		'/test/',
+			// 		'/src/**/*.spec.ts',
+			// 		'/**/*.spec.ts'
+			// 	]
+			// }
 		],
 	},
 	target: 'node',

@@ -25,10 +25,6 @@ const config = merge(base, {
 		path: path.join(__dirname, ".webpack"),
 		filename: "serverless.js",
 	},
-	performance: {
-		// Turn off size warnings for entry points
-		hints: false
-	},
 	optimization: {
 		minimize: true,
 		minimizer: [
