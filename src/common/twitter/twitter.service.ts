@@ -17,7 +17,8 @@ export class TwitterService implements OnModuleInit {
 
 	async quoteTweet(text: string, tweetIdToQuote: string, option) {
 		return await this.twitterInstance.v2.tweet({
-			text, reply: { in_reply_to_tweet_id: tweetIdToQuote }
+			text,
+			reply: { in_reply_to_tweet_id: tweetIdToQuote }
 		});
 	}
 

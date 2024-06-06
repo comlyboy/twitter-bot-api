@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 
 import { Request, Response } from 'express';
-import { ObjectType, ResponseMessageEnum } from 'src/common';
+import { ApiResponse, ObjectType, ResponseMessageEnum } from 'src/common';
 
 
 @Catch(HttpException)
@@ -26,6 +26,23 @@ export class HttpExceptionFilter implements ExceptionFilter {
 			message = ResponseMessageEnum.LOGIN_SESSION_EXPIRED;
 		}
 
+		if (message === 'invalid signature') {
+			statusCode = HttpStatus.UNPROCESSABLE_ENTITY;
+			message = 'Invalid token signature!';
+		}
+		if (message === 'jwt malformed' || message === 'jwt must be provided') {
+			statusCode = HttpStatus.UNPROCESSABLE_ENTITY;
+			message = 'Invalid verification token!';
+		}
+		if (message === 'jwt expired') {
+			statusCode = HttpStatus.UNPROCESSABLE_ENTITY;
+			message = 'Token is expired!';
+		}
+		if (message === 'NOT_A_NUMBER') {
+			message = 'Not a valid phone number!';
+		}
+
+
 		const error = {
 			statusCode,
 			timestamp: new Date().toISOString(),
@@ -35,9 +52,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
 		};
 
 		if (statusCode > 499 && statusCode < 600) {
-			console.log(`ERROR => ${JSON.stringify(error)}`);
+			console.log('ERROR =>', error);
 		}
 
-		response.status(statusCode).json({ error });
+		response.status(statusCode).json(new ApiResponse({ error, message }));
 	}
 }

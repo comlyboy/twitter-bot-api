@@ -2,7 +2,7 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from
 
 import { Request, Response } from 'express';
 
-import { ResponseMessageEnum, ObjectType } from 'src/common';
+import { ResponseMessageEnum, ObjectType, ApiResponse } from 'src/common';
 
 
 @Catch()
@@ -41,6 +41,10 @@ export class AllExceptionFilter implements ExceptionFilter {
 			message
 		};
 
-		response.status(statusCode).json({ error });
+		if (statusCode > 499 && statusCode < 600) {
+			console.log('ERROR =>', error);
+		}
+
+		response.status(statusCode).json(new ApiResponse({ error, message }));
 	}
 }

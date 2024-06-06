@@ -1,6 +1,6 @@
 # https://github.com/lalcebo/json-schema/blob/master/serverless/reference.json
 service: twitter-bot-api
-frameworkVersion: "3"
+frameworkVersion: '3'
 useDotenv: true
 plugins:
   - serverless-webpack
@@ -14,10 +14,10 @@ custom:
     number: 3
 
   webpack:
-    webpackConfig: "webpack.config.js" # Name of webpack configuration file
+    webpackConfig: 'webpack.config.js' # Name of webpack configuration file
     includeModules: true # Node modules configuration for packaging
     keepOutputDirectory: true
-    packager: "npm" # Packager that will be used to package your external modules
+    packager: 'npm' # Packager that will be used to package your external modules
     excludeFiles: src/**/*.spec.ts # Provide a glob for files to ignore
 
   stage: ${opt:stage, 'development'}
@@ -49,13 +49,13 @@ provider:
     # https://www.serverless.com/framework/docs/providers/aws/events/http-api
     shouldStartNameWithService: true
     cors:
-      allowedOrigins: "*"
-      allowedHeaders: "*"
-      allowedMethods: "*"
+      allowedOrigins: '*'
+      allowedHeaders: '*'
+      allowedMethods: '*'
       allowCredentials: false
 
   environment:
-    NODE_OPTIONS: "--enable-source-maps"
+    NODE_OPTIONS: '--enable-source-maps'
     NODE_ENV: ${self:custom.stage}
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
 
@@ -73,8 +73,25 @@ provider:
             - dynamodb:DeleteItem
           Resource: 'arn:aws:dynamodb:us-east-1:*:*'
 
+
+# The "Resources" your "Functions" use. Raw AWS CloudFormation goes in here.
+resources:
+  Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: usersTable
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            AttributeType: S
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
 functions:
-  main-handler:
+  mainHandler:
     name: ${self:service}-${self:custom.stage}
     handler: dist/serverless.handler
     timeout: 15
@@ -84,10 +101,11 @@ functions:
           path: /{proxy+}
           method: any
       - schedule:
+          # https://www.serverless.com/framework/docs/providers/aws/events/schedule
           name: google-trend-lookup
           method: scheduler
           rate: ${self:custom.1minsCron}
           input:
-            botId: sola-Bot
+            botId: sola-bot
             key2: value2
             env: ${self:custom.stage}

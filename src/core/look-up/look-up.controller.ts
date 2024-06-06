@@ -15,7 +15,8 @@ export class LookUpController {
 	handleEvent(
 		@CurrentEventBridgeBody() event: any
 	) {
-    return this.lookUpService.findAll();
-  }
+		console.log('LOG => event recieved', event);
+		return this.lookUpService.findAll();
+	}
 
 }
