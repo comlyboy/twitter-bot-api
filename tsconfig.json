@@ -23,10 +23,5 @@
 		"useUnknownInCatchVariables": false,
 		"forceConsistentCasingInFileNames": true,
 		"noFallthroughCasesInSwitch": true
-	},
-	"exclude": [
-		"node_modules",
-		"cdk.out",
-		"test"
-	]
+	}
 }

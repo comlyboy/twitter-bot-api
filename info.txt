@@ -3,3 +3,10 @@ https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigatewayv2.HttpApi
 https://docs.aws.amazon.com/cdk/v2/guide/assets.html#assets_types_s3
 https://docs.aws.amazon.com/lambda/latest/dg/typescript-package.html#aws-cdk-ts esbuild
 https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-rate-expressions.html
+https://circleci.com/blog/deploy-aws-lambda-cdk/
+https://github.com/CIRCLECI-GWP/aws-cdk-lambda-circle-ci
+https://stackoverflow.com/questions/68575258/how-to-delete-lambda-function-log-group-on-cdk-destroy-using-cdk?rq=1
+https://stackoverflow.com/questions/65130359/how-to-get-bucket-name-from-bucket-object-in-aws-cdk-for-python
+https://stackoverflow.com/questions/78583749/how-to-use-a-existing-bucket-for-lambda-deployment-using-cdk
+https://stackoverflow.com/questions/76557981/create-log-group-for-custom-resource-lambda-in-aws-cdk-aws-s3-deployment
+https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_s3_deployment-readme.html
