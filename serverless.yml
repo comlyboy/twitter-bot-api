@@ -1,0 +1,93 @@
+# https://github.com/lalcebo/json-schema/blob/master/serverless/reference.json
+service: twitter-bot-api
+frameworkVersion: "3"
+useDotenv: true
+plugins:
+  - serverless-webpack
+  - serverless-prune-plugin
+  # - serverless-dotenv-plugin
+  - serverless-deployment-bucket
+
+custom:
+  prune:
+    automatic: true
+    number: 3
+
+  webpack:
+    webpackConfig: "webpack.config.js" # Name of webpack configuration file
+    includeModules: true # Node modules configuration for packaging
+    keepOutputDirectory: true
+    packager: "npm" # Packager that will be used to package your external modules
+    excludeFiles: src/**/*.spec.ts # Provide a glob for files to ignore
+
+  stage: ${opt:stage, 'development'}
+  region: ${opt:region, 'us-east-1'}
+  name: twitter-bot
+  10minsCron: rate(10 minutes)
+  20minsCron: rate(20 minutes)
+  1minsCron: rate(20 minutes)
+
+provider:
+  name: aws
+  stage: ${self:custom.stage}
+  runtime: nodejs20.x
+  region: us-east-1
+  deploymentBucket:
+    name: ${self:service}
+  deploymentPrefix: ${self:custom.name}
+  architecture: arm64
+
+  # Optional CloudFormation tags to apply to APIs and functions
+  tags:
+    appName: ${self:custom.name}
+
+  # Optional CloudFormation tags to apply to the stack
+  stackTags:
+    appName: ${self:custom.name}
+
+  httpApi:
+    # https://www.serverless.com/framework/docs/providers/aws/events/http-api
+    shouldStartNameWithService: true
+    cors:
+      allowedOrigins: "*"
+      allowedHeaders: "*"
+      allowedMethods: "*"
+      allowCredentials: false
+
+  environment:
+    NODE_OPTIONS: "--enable-source-maps"
+    NODE_ENV: ${self:custom.stage}
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+  # Below asigned lambda function the permission use other AWS services
+  iam:
+    role:
+      statements: # permissions for all of your functions can be set here
+        - Effect: Allow
+          Action: # Gives permission to DynamoDB tables in a specific region
+            - dynamodb:DescribeTable
+            - dynamodb:Query
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: 'arn:aws:dynamodb:us-east-1:*:*'
+
+functions:
+  main-handler:
+    name: ${self:service}-${self:custom.stage}
+    handler: dist/serverless.handler
+    timeout: 15
+    events:
+      # - httpApi: "*"
+      - httpApi:
+          path: /{proxy+}
+          method: any
+      - schedule:
+          name: google-trend-lookup
+          method: scheduler
+          rate: ${self:custom.1minsCron}
+          input:
+            botId: sola-Bot
+            key2: value2
+            env: ${self:custom.stage}
