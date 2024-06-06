@@ -1,14 +1,14 @@
 // import path from 'path';
 
 import * as cdk from 'aws-cdk-lib';
-// import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 // import * as s3Deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as cloudWatch from 'aws-cdk-lib/aws-logs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
-
+// import * as cloudformation from 'aws-cdk-lib/aws-cloudformation';
 import * as apiGatewayV2 from 'aws-cdk-lib/aws-apigatewayv2';
 import * as apiGatewayIntegration from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 
@@ -22,12 +22,17 @@ export class TwitterBotApiLambdaStack extends cdk.Stack {
 	constructor(scope: cdk.App, id: string, props: IProp) {
 		super(scope, id, props);
 
-		const lambdaLayer = new lambda.LayerVersion(this, props.stackId + 'Layer', {
-			code: lambda.Code.fromAsset('node_modules'),
-			layerVersionName: 'lambdaNestFullResource',
-			removalPolicy: cdk.RemovalPolicy.RETAIN,
-			compatibleArchitectures: [lambda.Architecture.ARM_64],
-			compatibleRuntimes: [lambda.Runtime.NODEJS_18_X, lambda.Runtime.NODEJS_20_X]
+		// const lambdaLayer = new lambda.LayerVersion(this, props.stackId + 'Layer', {
+		// 	code: lambda.Code.fromAsset('node_modules'),
+		// 	layerVersionName: 'lambdaNestFullResource',
+		// 	removalPolicy: cdk.RemovalPolicy.RETAIN,
+		// 	compatibleArchitectures: [lambda.Architecture.ARM_64],
+		// 	compatibleRuntimes: [lambda.Runtime.NODEJS_18_X, lambda.Runtime.NODEJS_20_X]
+		// });
+
+		new s3.Bucket(this, props.stackId + 'Bucket', {
+			bucketName: props.stackName,
+			removalPolicy: cdk.RemovalPolicy.DESTROY
 		});
 
 		const twitterBotFunction = new lambda.Function(this, id, {
@@ -38,10 +43,9 @@ export class TwitterBotApiLambdaStack extends cdk.Stack {
 			timeout: cdk.Duration.seconds(15),
 			// memorySize: 1024,
 			architecture: lambda.Architecture.ARM_64,
-			// code: lambda.Code.fromAsset('dist/src'),
 			code: lambda.Code.fromAsset('dist/src'),
-			// ephemeralStorageSize:cdk.Size.(),
-			layers: [lambdaLayer],
+			ephemeralStorageSize: cdk.Size.mebibytes(128),
+			// layers: [lambdaLayer],
 			environment: {
 				NODE_ENV: props.stage,
 				NODE_OPTIONS: '--enable-source-maps',
@@ -60,7 +64,7 @@ export class TwitterBotApiLambdaStack extends cdk.Stack {
 		lambdaApi.addRoutes({
 			path: '/{proxy+}',
 			methods: [apiGatewayV2.HttpMethod.ANY],
-			integration: new apiGatewayIntegration.HttpLambdaIntegration(props.stackId + 'HttpApiIntegration', twitterBotFunction),
+			integration: new apiGatewayIntegration.HttpLambdaIntegration(props.stackId + 'HttpApiIntegration', twitterBotFunction)
 		});
 
 		// s3
