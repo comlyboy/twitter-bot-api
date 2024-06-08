@@ -42,7 +42,7 @@ export class AllExceptionFilter implements ExceptionFilter {
 		};
 
 		if (statusCode > 499 && statusCode < 600) {
-			console.log('ERROR =>', error);
+			console.log('ERROR =>', exception);
 		}
 
 		response.status(statusCode).json(new ApiResponse({ error, message }));

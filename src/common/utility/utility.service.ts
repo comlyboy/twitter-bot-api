@@ -3,14 +3,12 @@ import { Injectable } from '@nestjs/common';
 
 import { GetCommandOutput, UpdateCommandOutput, PutCommandOutput, BatchGetCommandOutput } from '@aws-sdk/lib-dynamodb';
 import { v4 as uuidv4 } from 'uuid';
-import parsePhoneNumberFromString, { CountryCode, parsePhoneNumber } from 'libphonenumber-js';
 import CryptoJS from 'crypto-js';
-import { getCurrentInvoke } from '@vendia/serverless-express';
+import { getCurrentInvoke } from '@codegenie/serverless-express';
 import { APIGatewayProxyEventV2, Context } from 'aws-lambda';
 
 import { EntityNameType, WORKINANCE_ID_DIVIDER } from '../base.constant';
 import { EnvironmentConfig } from 'src/configuration';
-import { ObjectType } from '../base.interface';
 import { Request } from 'express';
 import validator from 'validator';
 
@@ -241,11 +239,6 @@ export class UtilityService {
 	}
 
 
-	SanitizeData<TBody extends ObjectType>() {
-
-	}
-
-
 	SortArray<TData>({ data, key, isReverse = false }: {
 		data: TData[];
 		key: string;
@@ -277,66 +270,6 @@ export class UtilityService {
 	}
 
 
-
-	/**
-	* Returns a formatted nigeria phone number without intenational code...
-	* E.g 2347022334455.
-	*/
-	FormatPhoneNumber({ phonenumber, countryCode = 'NG' }: {
-		phonenumber: string;
-		countryCode?: CountryCode | {
-			defaultCountry?: CountryCode;
-			defaultCallingCode?: string;
-			extract?: boolean;
-		};
-	}): Promise<string> {
-		return new Promise<string>((resolve, reject) => {
-			if (!phonenumber || phonenumber === '') reject('PhoneNumber cannot be invalid!');
-			const phoneNumber = parsePhoneNumber(phonenumber, countryCode as any);
-			resolve(`${phoneNumber.countryCallingCode}${phoneNumber.nationalNumber}`);
-		});
-	}
-
-
-	/**
-	 * * Returns a formatted nigeria phone number with intenational code...  E.g +2347022334455.
-	 *
-	 * * Default is Nigeria number
-	 */
-	FormatPhoneNumberNgInterNational({ phonenumber, countryCode = 'NG' }: {
-		phonenumber: string;
-		countryCode?: CountryCode | {
-			defaultCountry?: CountryCode;
-			defaultCallingCode?: string;
-			extract?: boolean;
-		};
-	}): Promise<string> {
-		return new Promise<string>((resolve, reject) => {
-			if (!phonenumber || phonenumber === '') reject('PhoneNumber cannot be invalid!');
-			const pnumber = phonenumber.toString();
-			const phoneNumber = parsePhoneNumber(pnumber, countryCode as any);
-			resolve(phoneNumber.number.toString());
-		})
-	}
-
-
-	parsePhoneNumber(phonenumber: string) {
-		const phoneNumber = phonenumber?.startsWith('+') ? phonenumber : '+' + phonenumber;
-		return parsePhoneNumberFromString(phoneNumber);
-	}
-
-
-	// /**
-	//  * Returns a formatted nigeria phone number with intenational code without PLUS...  E.g 2347022334455.
-	//  */
-	//  FormatPhoneNumberNgInterNationalNoPlus(phonenumber: string) {
-	//     return new Promise<string>((resolve, reject) => {
-	//         const phoneNumber = parsePhoneNumber(phonenumber, 'NG')
-	//         resolve(`${phoneNumber.countryCallingCode}${phoneNumber.nationalNumber}`)
-	//     });
-	// }
-
-
 	CompileDynamoDbQueryCost({ currentCost, operationOutput }: {
 		currentCost: number;
 		operationOutput: GetCommandOutput | UpdateCommandOutput | QueryCommandOutput | PutCommandOutput | BatchGetCommandOutput;
@@ -364,15 +297,6 @@ export class UtilityService {
 		return result.join('. ');
 	}
 
-
-	// Encryption
-	async EncryptPaginationData<TBody extends Record<string, any>>(data: TBody) {
-		return (!data || !Object.entries(data).length) ? null : await this.EncryptData({ ...data });
-	}
-
-	async DecryptPaginationData<TResponse>(data: string) {
-		return data ? await this.DecryptData<TResponse>(data) : null;
-	}
 
 	EncryptData<TBody = any>(data: TBody): Promise<string> {
 		return new Promise<string>((resolve, reject) => {

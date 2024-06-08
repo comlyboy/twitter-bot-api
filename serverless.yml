@@ -23,9 +23,13 @@ custom:
   stage: ${opt:stage, 'development'}
   region: ${opt:region, 'us-east-1'}
   name: twitter-bot
-  10minsCron: rate(10 minutes)
-  20minsCron: rate(20 minutes)
-  1minsCron: rate(20 minutes)
+  eventBusName: twitter-bot-event-bus
+  10minsRate: rate(10 minutes)
+  20minsRate: rate(20 minutes)
+  1minsCron: cron(0/1 * * * ? *)
+  2minsCron: cron(0/2 * * * ? *)
+  1minsRate: rate(1 minutes)
+  2minsRate: rate(2 minutes)
 
 provider:
   name: aws
@@ -72,23 +76,35 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource: 'arn:aws:dynamodb:us-east-1:*:*'
-
+        - Effect: "Allow"
+          Action:
+            - "lambda:*"
+          Resource: '*'
+        - Effect: "Allow"
+          Action:
+            - "events:*"
+          Resource: '*'
 
 # The "Resources" your "Functions" use. Raw AWS CloudFormation goes in here.
-resources:
-  Resources:
-    usersTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: usersTable
-        AttributeDefinitions:
-          - AttributeName: email
-            AttributeType: S
-        KeySchema:
-          - AttributeName: email
-            AttributeType: S
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
+# resources:
+#   Resources:
+#     TwitterBotEventBus:
+#       Type: AWS::Events::EventBus
+#       Properties:
+#         Name: twitter-bot-event-bus
+
+#     usersTable:
+#       Type: AWS::DynamoDB::Table
+#       Properties:
+#         TableName: usersTable
+#         AttributeDefinitions:
+#           - AttributeName: email
+#             AttributeType: S
+#         KeySchema:
+#           - AttributeName: email
+#             AttributeType: S
+#             KeyType: HASH
+#         BillingMode: PAY_PER_REQUEST
 
 functions:
   mainHandler:
@@ -100,12 +116,20 @@ functions:
       - httpApi:
           path: /{proxy+}
           method: any
-      - schedule:
-          # https://www.serverless.com/framework/docs/providers/aws/events/schedule
-          name: google-trend-lookup
-          method: scheduler
-          rate: ${self:custom.1minsCron}
+      # - schedule:
+      #     name: google-trend-lookup
+      #     method: scheduler
+      #     rate: ${self:custom.1minsRate}
+      #     # enabled: false
+      #     input:
+      #       botId: sola-bot
+      #       env: ${self:custom.stage}
+      - eventBridge:
+          # eventBus: ${self:custom.eventBusName}
+          schedule: ${self:custom.1minsCron}
           input:
             botId: sola-bot
-            key2: value2
             env: ${self:custom.stage}
+          retryPolicy:
+            maximumEventAge: 3600
+            maximumRetryAttempts: 0

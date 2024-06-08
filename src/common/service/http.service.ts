@@ -13,7 +13,7 @@ export class HttpService {
 		} catch (error) {
 			const errorObject = error?.response?.data;
 			const message = errorObject?.message || 'Error occured in the http call!'
-			throw { status: error?.status || 500, message, ...errorObject };
+			throw { message, ...errorObject };
 		}
 	}
 }

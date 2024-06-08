@@ -1,4 +1,6 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Get, Post, Res } from '@nestjs/common';
+
+import { Response } from 'express';
 
 import { LookUpService } from './look-up.service';
 import { CurrentEventBridgeBody } from 'src/decorator';
@@ -12,11 +14,20 @@ export class LookUpController {
 
 
 	@Post()
-	handleEvent(
+	async lookUp(
+		@Res() res: Response,
 		@CurrentEventBridgeBody() event: any
 	) {
 		console.log('LOG => event recieved', event);
-		return this.lookUpService.findAll();
+		return this.lookUpService.lookUp();
+	}
+
+	@Get()
+	async lookupGoogle(
+		@Res() res: Response
+	) {
+		const data = await this.lookUpService.lookupGoogle();
+		return res.status(200).json({ data });
 	}
 
 }
