@@ -2,7 +2,7 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from
 
 import { Request, Response } from 'express';
 
-import { ResponseMessageEnum, ObjectType, ApiResponse } from 'src/common';
+import { ResponseMessageEnum, ObjectType, ApiResponseBuilder, ApiResult } from 'src/common';
 
 
 @Catch()
@@ -45,6 +45,6 @@ export class AllExceptionFilter implements ExceptionFilter {
 			console.log('ERROR =>', exception);
 		}
 
-		response.status(statusCode).json(new ApiResponse({ error, message }));
+		new ApiResponseBuilder(response, new ApiResult({ error, message }), statusCode);
 	}
 }

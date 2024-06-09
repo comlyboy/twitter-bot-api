@@ -6,11 +6,13 @@ import { v4 as uuidv4 } from 'uuid';
 import CryptoJS from 'crypto-js';
 import { getCurrentInvoke } from '@codegenie/serverless-express';
 import { APIGatewayProxyEventV2, Context } from 'aws-lambda';
-
-import { EntityNameType, WORKINANCE_ID_DIVIDER } from '../base.constant';
-import { EnvironmentConfig } from 'src/configuration';
 import { Request } from 'express';
 import validator from 'validator';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+
+import { EntityNameType, CUSTOM_ID_DIVIDER } from '../base.constant';
+import { EnvironmentConfig } from 'src/configuration';
+import { ObjectType } from '../base.interface';
 
 @Injectable()
 export class UtilityService {
@@ -45,9 +47,9 @@ export class UtilityService {
 		fullBranchId?: string;
 	}): string {
 		if (!fullBranchId) {
-			return [entityName, WORKINANCE_ID_DIVIDER, branchId].join('');
+			return [entityName, CUSTOM_ID_DIVIDER, branchId].join('');
 		}
-		return fullBranchId.split(WORKINANCE_ID_DIVIDER).at(1);
+		return fullBranchId.split(CUSTOM_ID_DIVIDER).at(1);
 	}
 
 
@@ -59,11 +61,11 @@ export class UtilityService {
 	}): string {
 		if (!fullBusinessId) {
 			if (!branchId) {
-				return [entityName, WORKINANCE_ID_DIVIDER, businessId].join('');
+				return [entityName, CUSTOM_ID_DIVIDER, businessId].join('');
 			}
-			return [entityName, WORKINANCE_ID_DIVIDER, branchId, WORKINANCE_ID_DIVIDER, businessId].join('');
+			return [entityName, CUSTOM_ID_DIVIDER, branchId, CUSTOM_ID_DIVIDER, businessId].join('');
 		} else {
-			const idsToArray = fullBusinessId.split(WORKINANCE_ID_DIVIDER); // return businessID
+			const idsToArray = fullBusinessId.split(CUSTOM_ID_DIVIDER); // return businessID
 			return idsToArray.length === 2 ? idsToArray.at(1) : idsToArray.at(2);
 		}
 	}
@@ -302,7 +304,7 @@ export class UtilityService {
 		return new Promise<string>((resolve, reject) => {
 			try {
 				const dataToString = typeof data === 'string' ? data : JSON.stringify(data);
-				const ciphertext = CryptoJS.AES.encrypt(dataToString, EnvironmentConfig.BOT_SERVER_SECRET_KEY).toString();
+				const ciphertext = CryptoJS.AES.encrypt(dataToString, EnvironmentConfig.BOT_API_SECRET_KEY).toString();
 				resolve(ciphertext);
 			} catch (error) {
 				reject(error.message);
@@ -313,7 +315,7 @@ export class UtilityService {
 	DecryptData<TResponse>(hashedData: string): Promise<TResponse> {
 		return new Promise<TResponse>((resolve, reject) => {
 			try {
-				const bytes = CryptoJS.AES.decrypt(hashedData, EnvironmentConfig.BOT_SERVER_SECRET_KEY);
+				const bytes = CryptoJS.AES.decrypt(hashedData, EnvironmentConfig.BOT_API_SECRET_KEY);
 				const decryptedData = JSON.parse(bytes?.toString(CryptoJS.enc.Utf8)) as TResponse;
 				resolve(decryptedData);
 			} catch (error) {
@@ -355,6 +357,17 @@ export class UtilityService {
 		}
 
 		return "";
+	}
+
+	async sendHttpRequest<TResponse = any, TBody extends ObjectType = any>(options: AxiosRequestConfig<TBody>): Promise<TResponse> {
+		try {
+			const response = await axios({ ...options }) as unknown as AxiosResponse<TResponse, TBody>;
+			return response.data as TResponse;
+		} catch (error) {
+			const errorObject = error?.response?.data;
+			const message = errorObject?.message || 'Error occured in the http call!'
+			throw { message, ...errorObject };
+		}
 	}
 
 

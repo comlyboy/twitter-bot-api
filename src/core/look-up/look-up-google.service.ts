@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import googleTrends from 'google-trends-api';
-import { HttpService, ObjectType } from 'src/common';
+import { ObjectType, UtilityService } from 'src/common';
 import { IGoogleGeoTrend, IGoogleTrendTimeline, IGoogleTrendTopic, ITrendParams } from './look-up.interface';
 // import { HttpsProxyAgent } from 'https-proxy-agent';
 
@@ -11,7 +11,7 @@ export class LookUpGoogleService {
 	// private BASE_GOOGLE_TREND_URL = '';
 
 	constructor(
-		private httpService: HttpService
+		private utilityService: UtilityService
 	) { }
 
 	// https://www.npmjs.com/package/google-trends-api#autocomplete
@@ -78,7 +78,7 @@ export class LookUpGoogleService {
 	}
 
 	async getTrends() {
-		const response = await this.httpService.sendHttpRequest({
+		const response = await this.utilityService.sendHttpRequest({
 			url: 'https://trends.google.com/trends/api/explore/pickers/category?hl=en-US&tz=240',
 			method: 'get'
 		});

@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
-// import helmet from 'helmet';
+import helmet from 'helmet';
 import morgan from "morgan";
 import { getCurrentInvoke } from '@codegenie/serverless-express';
 
@@ -14,7 +14,7 @@ export async function bootstrapApplication() {
 	const application = await NestFactory.create<NestExpressApplication>(AppModule);
 	application.setGlobalPrefix('api');
 	application.enableCors();
-	// application.use(helmet());
+	application.use(helmet());
 	application.useGlobalFilters(new AllExceptionFilter(), new HttpExceptionFilter());
 	application.useGlobalPipes(new ValidationPipe({
 		whitelist: true, transform: true,

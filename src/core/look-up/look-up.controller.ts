@@ -2,8 +2,10 @@ import { Controller, Get, Post, Res } from '@nestjs/common';
 
 import { Response } from 'express';
 
+import { ApiResponseBuilder, ApiResult, ICurrentInvocation } from 'src/common';
 import { LookUpService } from './look-up.service';
-import { CurrentEventBridgeBody } from 'src/decorator';
+import { CurrentEventBridgeBody, CurrentLambdaInvocation } from 'src/decorator';
+import { IEventData } from './look-up.interface';
 
 @Controller('look-up')
 export class LookUpController {
@@ -16,11 +18,13 @@ export class LookUpController {
 	@Post()
 	async lookUp(
 		@Res() res: Response,
-		@CurrentEventBridgeBody() event: any
+		@CurrentEventBridgeBody() eventData: IEventData,
+		@CurrentLambdaInvocation() currentInvocation: ICurrentInvocation
 	) {
-		console.log('LOG => event recieved', event);
-		return this.lookUpService.lookUp();
+		await this.lookUpService.lookUp(eventData, currentInvocation);
+		return new ApiResponseBuilder(res, new ApiResult());
 	}
+
 
 	@Get()
 	async lookupGoogle(

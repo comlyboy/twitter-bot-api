@@ -1,6 +1,7 @@
 import { NativeAttributeValue } from "@aws-sdk/lib-dynamodb";
 
-import { DefinedAppEnvironmentType, EntityNameType } from "./base.constant";
+import { ApplicationEnvironmentType, EntityNameType } from "./base.constant";
+import { APIGatewayProxyEventV2, Context, EventBridgeEvent } from "aws-lambda";
 
 export interface IBaseId {
 	id: string;
@@ -38,8 +39,15 @@ export interface IErrorResponse {
 }
 
 export interface IEnvronmentVariable {
-	NODE_ENV: DefinedAppEnvironmentType;
-	BOT_SERVER_SECRET_KEY: string;
+	NODE_ENV: ApplicationEnvironmentType;
+	BOT_API_SECRET_KEY: string;
 }
 
+export interface IEventBridgeEvent extends EventBridgeEvent<string, ObjectType> { }
+
 export type ObjectType = Record<string, NativeAttributeValue>;
+
+export interface ICurrentInvocation{
+	event: APIGatewayProxyEventV2;
+	context:Context
+}

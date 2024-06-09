@@ -1,9 +1,8 @@
-import { DefinedAppEnvironmentEnum, DefinedAppEnvironmentType } from "../common/base.constant";
-import { IEnvronmentVariable } from "../common/base.interface";
+import { ApplicationEnvironmentEnum, ApplicationEnvironmentType, IEnvronmentVariable } from "src/common";
 
 require('dotenv').config();
 
-export const EnvironmentConfig: IEnvronmentVariable = {
-	NODE_ENV: process.env.NODE_ENV?.toLowerCase() as DefinedAppEnvironmentType || DefinedAppEnvironmentEnum.DEVELOPMENT,
-	BOT_SERVER_SECRET_KEY: process.env.BOT_SERVER_SECRET_KEY,
-} as const;
+export const EnvironmentConfig: Readonly<IEnvronmentVariable> = {
+	NODE_ENV: process.env.NODE_ENV?.toLowerCase() as ApplicationEnvironmentType || ApplicationEnvironmentEnum.DEVELOPMENT,
+	BOT_API_SECRET_KEY: process.env.BOT_SERVER_SECRET_KEY,
+};

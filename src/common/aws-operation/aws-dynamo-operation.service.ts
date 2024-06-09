@@ -8,7 +8,7 @@ import { IPutCommandInput, IGetCommandInput, IGetCommandOutput, IBatchGetCommand
 import { UtilityService } from '../utility';
 import { ObjectType } from '../base.interface';
 import { EnvironmentConfig } from 'src/configuration';
-import { DefinedAppEnvironmentEnum, EntityNameType } from '../base.constant';
+import { ApplicationEnvironmentEnum, EntityNameType } from '../base.constant';
 import { CachingService } from '../caching';
 
 @Injectable()
@@ -205,12 +205,11 @@ export class AwsDynamoRepositoryService {
 
 
 	private generateDatabaseName() {
-		// const databaseName = 'handyman-database-table';
-		const databaseName = 'workinance-database-table';
-		if (EnvironmentConfig.NODE_ENV === DefinedAppEnvironmentEnum.PRODUCTION) {
-			return `${databaseName}.${DefinedAppEnvironmentEnum.PRODUCTION}`;
+		const databaseName = 'twitter-bot-database';
+		if (EnvironmentConfig.NODE_ENV === ApplicationEnvironmentEnum.PRODUCTION) {
+			return `${databaseName}.${ApplicationEnvironmentEnum.PRODUCTION}`;
 		}
-		return `${databaseName}.${DefinedAppEnvironmentEnum.DEVELOPMENT}`;
+		return `${databaseName}.${ApplicationEnvironmentEnum.DEVELOPMENT}`;
 	}
 
 

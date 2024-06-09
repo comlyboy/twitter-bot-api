@@ -21,8 +21,8 @@ https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-transform-target-inp
 
 eventsource serverless
 https://github.com/CodeGenieApp/serverless-express/issues/623
+https://github.com/CodeGenieApp/serverless-express/issues/675
 https://github.com/CodeGenieApp/serverless-express/blob/mainline/examples/custom-mapper-dynamodb/src/dynamodb-event-mappings.js
-
 
 
 google trend

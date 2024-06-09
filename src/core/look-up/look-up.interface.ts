@@ -1,4 +1,9 @@
-import { ObjectType } from "src/common";
+import { ApplicationEnvironmentType, ObjectType } from "src/common";
+
+export interface IEventData{
+	botId: string;
+	environment: ApplicationEnvironmentType;
+}
 
 export interface ITrendParams {
 	geo?: string;

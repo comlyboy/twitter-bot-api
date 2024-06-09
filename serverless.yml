@@ -5,7 +5,7 @@ useDotenv: true
 plugins:
   - serverless-webpack
   - serverless-prune-plugin
-  # - serverless-dotenv-plugin
+  - serverless-dotenv-plugin
   - serverless-deployment-bucket
 
 custom:
@@ -24,6 +24,8 @@ custom:
   region: ${opt:region, 'us-east-1'}
   name: twitter-bot
   eventBusName: twitter-bot-event-bus
+  botEventValues: ${file(./script/eventBridgeValueSetter.js)}
+
   10minsRate: rate(10 minutes)
   20minsRate: rate(20 minutes)
   1minsCron: cron(0/1 * * * ? *)
@@ -35,7 +37,7 @@ provider:
   name: aws
   stage: ${self:custom.stage}
   runtime: nodejs20.x
-  region: us-east-1
+  region: ${self:custom.region}
   deploymentBucket:
     name: ${self:service}
   deploymentPrefix: ${self:custom.name}
@@ -127,9 +129,7 @@ functions:
       - eventBridge:
           # eventBus: ${self:custom.eventBusName}
           schedule: ${self:custom.1minsCron}
-          input:
-            botId: sola-bot
-            env: ${self:custom.stage}
+          input: ${self:custom.botEventValues.sola-bot}
           retryPolicy:
             maximumEventAge: 3600
             maximumRetryAttempts: 0
