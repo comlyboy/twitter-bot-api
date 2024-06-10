@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const { GetCallerIdentityCommand, STSClient } = require('@aws-sdk/client-sts');
 
 
@@ -21,12 +22,12 @@ module.exports = async ({ options, resolveVariable, }) => {
 		},
 	];
 
-	intendedValues.forEach((value, index) => {
+	intendedValues.forEach(value => {
 		finalValues = {
 			...finalValues,
 			[value.botId]: {
 				version: "0",
-				id: Math.random().toString(),
+				id: uuidv4(),
 				"detail-type": "Twitter bot event schedule",
 				source: "twitter.bot.events",
 				account: accountId,

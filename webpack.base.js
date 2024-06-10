@@ -9,7 +9,7 @@ const config = merge(base, {
 	resolve: {
 		extensions: ['.js', '.jsx', '.ts', '.tsx'],
 		// @ts-ignore
-		plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })],
+		plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.build.json' })],
 	},
 	performance: {
 		hints: 'warning',
@@ -17,26 +17,19 @@ const config = merge(base, {
 	devtool: false,
 	module: {
 		rules: [
-			// {
-			// 	test: /\.ts$/,
-			// 	loader: 'ts-loader',
-			// 	exclude: /node_modules/,
-			// },
-			// {
-			// 	test: /\.ts$/,
-			// 	exclude: [
-			// 		'/test/',
-			// 		'/src/**/*.spec.ts',
-			// 		'/**/*.spec.ts'
-			// 	]
-			// },
 			{
 				test: /\.ts$/,
-				loader: 'esbuild-loader',
+				loader: 'ts-loader',
+				include: /src/,
 				exclude: /node_modules/,
-				options: {
-					minify: true,
-				}
+			},
+			{
+				test: /\.ts$/,
+				exclude: [
+					'/test/',
+					'/src/**/*.spec.ts',
+					'/**/*.spec.ts'
+				]
 			}
 		],
 	},

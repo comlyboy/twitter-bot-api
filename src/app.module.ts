@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
 
-import { LookUpModule } from './core';
-import { TwitterModule } from './common';
 import { AppController } from './app.controller';
-import { EventModule } from './core/event/event.module';
+import { LookUpModule } from './core';
+import { TwitterModule, UtilityModule } from './common';
 
 @Module({
 	controllers: [AppController],
 	imports: [
+		// EventModule,
 		// AuthModule,
 		LookUpModule,
 		TwitterModule,
-		EventModule,
+		UtilityModule,
 	]
 })
 export class AppModule { }

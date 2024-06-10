@@ -8,17 +8,17 @@ const base = require("./webpack.base.js");
 
 console.log('Build LOG => stage', slsw.lib.options.stage);
 
-// /**
-//  * @param {string} url
-//  */
-// function getFullPath(url) {
-// 	return path.resolve(__dirname, url);
-// }
+/**
+ * @param {string} url
+ */
+function getFullPath(url) {
+	return path.resolve(__dirname, url);
+}
 
 const config = merge(base, {
 	mode: slsw.lib.options.stage === 'production' ? 'production' : 'none',
-	// entry: getFullPath('src/serverless.ts'),
-	entry: 'dist/serverless.js',
+	entry: getFullPath('dist/serverless.js'),
+	// entry: 'dist/serverless.js',
 	devtool: "source-map",
 	stats: 'minimal',
 	output: {
