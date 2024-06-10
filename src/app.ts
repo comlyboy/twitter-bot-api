@@ -7,7 +7,7 @@ import morgan from "morgan";
 
 import { AppModule } from './app.module';
 import { AllExceptionFilter, HttpExceptionFilter } from './filter';
-import { getCurrentInvoke } from '@vendia/serverless-express';
+import { getCurrentInvoke } from '@codegenie/serverless-express';
 
 
 export async function bootstrapApplication() {

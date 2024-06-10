@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
-import { getCurrentInvoke } from '@vendia/serverless-express';
+import { getCurrentInvoke } from '@codegenie/serverless-express';
 
 export const CurrentLambdaInvocation = createParamDecorator(
 	(data: any, context: ExecutionContext) => {
