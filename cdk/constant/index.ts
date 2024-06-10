@@ -1,4 +1,4 @@
 export enum LambdaApplicationEnum {
-	STACK_NAME = 'twitter-bot-api',
-	STACK_ID = 'TwitterBotApi'
+	STACK_NAME = 'twitter-api',
+	STACK_ID = 'TwitterApi'
 }

@@ -12,7 +12,9 @@ async function bootstrapLambdaApi(): Promise<APIGatewayProxyHandlerV2<never>> {
 		const expressInstance = application.getHttpAdapter().getInstance();
 		serverInstance = serverlessExpress({
 			app: expressInstance,
-			eventSourceRoutes: { AWS_EVENTBRIDGE: 'look-up' }
+			eventSourceRoutes: {
+				AWS_EVENTBRIDGE: 'api/look-up'
+			}
 		});
 	}
 	return serverInstance;

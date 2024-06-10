@@ -18,7 +18,7 @@ interface IProp extends cdk.StackProps {
 	readonly stackId: string;
 }
 
-export class TwitterBotApiLambdaStack extends cdk.Stack {
+export class TwitterApiLambdaStack extends cdk.Stack {
 	constructor(scope: cdk.App, id: string, props: IProp) {
 		super(scope, id, props);
 

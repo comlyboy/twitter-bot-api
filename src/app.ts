@@ -20,12 +20,10 @@ export async function bootstrapApplication() {
 		whitelist: true, transform: true,
 		transformOptions: { enableImplicitConversion: true }
 	}));
-	morgan.token('id', request => {
+	morgan.token('id', _ => {
 		return getCurrentInvoke().event?.requestContext?.requestId || Date.now().toString();
 	});
-	morgan.token('invocationId', request => {
-		return getCurrentInvoke().context?.awsRequestId;
-	});
+	morgan.token('invocationId', _ => getCurrentInvoke().context?.awsRequestId);
 	application.use(morgan('LOG => :id | :invocationId | :date[iso] | :method | :status | :url - :total-time ms'));
 	return { application };
 }
