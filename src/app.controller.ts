@@ -8,7 +8,8 @@ export class AppController {
 	create() {
 		return {
 			message: 'lambda API is running OKAY!!!',
-			environment: EnvironmentConfig
+			timestamp: new Date().toISOString(),
+			environment: EnvironmentConfig.NODE_ENV
 		}
 	}
 
