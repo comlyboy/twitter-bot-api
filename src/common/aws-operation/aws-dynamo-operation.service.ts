@@ -32,15 +32,17 @@ export class AwsDynamoRepositoryService {
 
 	/** Dynamo-DB get by ID command and cache it */
 	async runGetByIdCommand<TResponse extends ObjectType>({ id, entityName }: {
-		id: string,
-		entityName: EntityNameType
+		id: string;
+		entityName: EntityNameType;
 	}): Promise<TResponse> {
 		let data: TResponse;
 		const cachedData = await this.cacheService.get<TResponse>(id);
 		data = cachedData ? { ...cachedData } : null;
 		if (!cachedData) {
 			const { Result } = await this.runGetCommand<TResponse>({ Key: { id, entityName } });
-			await this.cacheService.set<TResponse>(id, Result);
+			if (Result) {
+				await this.cacheService.set<TResponse>(id, Result);
+			}
 			data = Result;
 		}
 		return data;

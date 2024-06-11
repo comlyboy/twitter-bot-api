@@ -27,3 +27,9 @@ https://github.com/CodeGenieApp/serverless-express/blob/mainline/examples/custom
 
 google trend
 https://github.com/deedy5/google_trends/blob/main/google_trends.py
+
+
+
+react in nestjs
+https://stackoverflow.com/questions/61966444/rendering-a-react-app-with-data-from-nodejs-server
+https://github.com/fullstackreact/food-lookup-demo/tree/master

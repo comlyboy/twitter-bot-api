@@ -2,9 +2,9 @@ import { Controller, Get, Post, Res } from '@nestjs/common';
 
 import { Response } from 'express';
 
-import { ApiResponseBuilder, ApiResult, ICurrentInvocation } from 'src/common';
+import { ApiResponseBuilder, ApiResult } from 'src/common';
 import { LookUpService } from './look-up.service';
-import { CurrentEventBridgeBody, CurrentLambdaInvocation } from 'src/decorator';
+import { CurrentEventBridgeBody } from 'src/decorator';
 import { IEventData } from './look-up.interface';
 
 @Controller('look-up')
@@ -18,10 +18,9 @@ export class LookUpController {
 	@Post()
 	async lookUp(
 		@Res() res: Response,
-		@CurrentEventBridgeBody() eventData: IEventData,
-		@CurrentLambdaInvocation() currentInvocation: ICurrentInvocation
+		@CurrentEventBridgeBody() eventData: IEventData
 	) {
-		await this.lookUpService.lookUp(eventData, currentInvocation);
+		await this.lookUpService.lookUp(eventData);
 		return new ApiResponseBuilder(res, new ApiResult());
 	}
 

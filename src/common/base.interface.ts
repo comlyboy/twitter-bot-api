@@ -7,6 +7,10 @@ export interface IBaseId {
 	id: string;
 }
 
+export interface IBaseName {
+	name: string;
+}
+
 export interface IBaseCreateEditDate {
 	createdAtDate: string;
 	lastModifiedAtDate?: string;

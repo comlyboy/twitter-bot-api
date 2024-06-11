@@ -21,13 +21,12 @@ export enum ResponseMessageEnum {
 	UNAUTHENTICATED = 'You are not authenticated. Kindly login!',
 	SUSPEND = 'Suspended successfully!',
 	UNSUSPENDED = 'Unsuspended successfully!',
-	NO_BUSINESS_FOUND = 'No business created/selected!',
-	NO_USER_EXIST = 'Can\'t verify user account existence!',
 	INVALID_TOKEN = 'Invalid token!'
 }
 
 export enum EntityNameEnum {
 	BOT = 'bot',
+	FOOTBALL_NEWS = 'football-news',
 	GOOGLE_TREND = 'google-trend',
 	USER = 'user'
 }
