@@ -9,10 +9,6 @@ module.exports = async ({ options, resolveVariable, }) => {
 	let finalValues = {};
 	const intendedValues = [
 		{
-			botId: 'sola-bot',
-			environment: options.stage
-		},
-		{
 			botId: 'cornelius-bot',
 			environment: options.stage
 		},

@@ -1,17 +1,25 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
-import { TwitterApiReadWrite, TwitterApi, SendTweetV2Params } from 'twitter-api-v2';
+import { TwitterApiReadWrite, TwitterApi, SendTweetV2Params, TwitterApiTokens } from 'twitter-api-v2';
+import { AwsDynamoRepositoryService } from '../aws-operation';
+import { EntityNameEnum } from '../base.constant';
+import { UtilityService } from '../utility';
 
 @Injectable()
-export class TwitterService implements OnModuleInit {
+export class TwitterService {
 	private twitterInstance: TwitterApiReadWrite;
+
+	constructor(
+		private readonly utilityService: UtilityService,
+		private readonly awsDynamoService: AwsDynamoRepositoryService
+	) { }
 
 
 	async postTweet(text: string, options?: any) {
 		try {
 			return this.twitterInstance.v2.tweet(text, options);
 		} catch (error) {
-			console.log('error', error);
+			console.log('error',error);
 		}
 	}
 
@@ -27,23 +35,18 @@ export class TwitterService implements OnModuleInit {
 		});
 	}
 
-
-	private initTwitter() {
+	private async getTwitterInstance() {
 		if (!this.twitterInstance) {
+			const bot = await this.awsDynamoService.runGetByIdCommand<IBot>({ id: '', entityName: EntityNameEnum.BOT });
+			const botCredential = this.utilityService.DecryptData<TwitterApiTokens>(bot.credential);
 			this.twitterInstance = new TwitterApi({
 				appKey: 'o3dGCi8Ep8yWvKsRZUno0DY7F',
 				appSecret: 'MIXOmSDCIw8avI75XInwszE6zf1g06OzZNWkzAqEflMzF2xtQA',
 				accessToken: '1226887669222866944-z8k2Nn2dsjQrHTNKb1USw1AocI9iKc',
 				accessSecret: 'aGrbYiGhvtNRXIh1aCCykCaHMUHv528kWgh9O9d05eGEN'
 			}).readWrite;
-			console.log('twitterInstance', this.twitterInstance);
-
+			console.log('twitterInstance', JSON.stringify(this.twitterInstance));
 		}
-	}
-	// AAAAAAAAAAAAAAAAAAAAAM3yHAEAAAAAziVdtjBXArIgVtiFeHPm2xGbVvU%3DyahfMyOzLJrcpwR1YMRB6k7l2F9klcPInuS9oIPPX3EOHcetFy
-
-
-	onModuleInit() {
-		this.initTwitter();
+		return this.twitterInstance;
 	}
 }
