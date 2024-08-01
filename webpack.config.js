@@ -17,17 +17,14 @@ function getFullPath(url) {
 
 const config = merge(base, {
 	mode: slsw.lib.options.stage === 'production' ? 'production' : 'none',
-	entry: getFullPath('src/serverless.ts'),
+	entry: getFullPath('dist/serverless.js'),
+	// entry: 'dist/serverless.js',
 	devtool: "source-map",
 	stats: 'minimal',
 	output: {
 		libraryTarget: "commonjs",
 		path: path.join(__dirname, ".webpack"),
 		filename: "serverless.js",
-	},
-	performance: {
-		// Turn off size warnings for entry points
-		hints: false
 	},
 	optimization: {
 		minimize: true,

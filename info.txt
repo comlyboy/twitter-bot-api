@@ -1,0 +1,35 @@
+https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_lambda-readme.html#event-rule-target
+https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_apigatewayv2.HttpApi.html
+https://docs.aws.amazon.com/cdk/v2/guide/assets.html#assets_types_s3
+https://docs.aws.amazon.com/lambda/latest/dg/typescript-package.html#aws-cdk-ts esbuild
+https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-rate-expressions.html
+https://circleci.com/blog/deploy-aws-lambda-cdk/
+https://github.com/CIRCLECI-GWP/aws-cdk-lambda-circle-ci
+https://stackoverflow.com/questions/68575258/how-to-delete-lambda-function-log-group-on-cdk-destroy-using-cdk?rq=1
+https://stackoverflow.com/questions/65130359/how-to-get-bucket-name-from-bucket-object-in-aws-cdk-for-python
+https://stackoverflow.com/questions/78583749/how-to-use-a-existing-bucket-for-lambda-deployment-using-cdk
+https://stackoverflow.com/questions/76557981/create-log-group-for-custom-resource-lambda-in-aws-cdk-aws-s3-deployment
+https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_s3_deployment-readme.html
+
+
+Event-bridge scheduler
+https://repost.aws/questions/QU4hPNrPwYTg2Nagm9idZfCg/why-can-t-you-create-a-scheduled-rule-on-a-custom-bus-in-eventbridge
+https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-create-rule-schedule.html#eb-create-scheduled-rule
+https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-create-rule-schedule.html
+https://catalog.us-east-1.prod.workshops.aws/workshops/63320e83-6abc-493d-83d8-f822584fb3cb/en-US/eventbridge/simple-bus
+https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-transform-target-input.html
+
+eventsource serverless
+https://github.com/CodeGenieApp/serverless-express/issues/623
+https://github.com/CodeGenieApp/serverless-express/issues/675
+https://github.com/CodeGenieApp/serverless-express/blob/mainline/examples/custom-mapper-dynamodb/src/dynamodb-event-mappings.js
+
+
+google trend
+https://github.com/deedy5/google_trends/blob/main/google_trends.py
+
+
+
+react in nestjs
+https://stackoverflow.com/questions/61966444/rendering-a-react-app-with-data-from-nodejs-server
+https://github.com/fullstackreact/food-lookup-demo/tree/master

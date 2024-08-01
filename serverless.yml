@@ -5,60 +5,73 @@ useDotenv: true
 plugins:
   - serverless-webpack
   - serverless-prune-plugin
-  - serverless-dotenv-plugin
+  # - serverless-dotenv-plugin
   - serverless-deployment-bucket
 
 custom:
   prune:
     automatic: true
-    number: 4
+    number: 3
 
   webpack:
     webpackConfig: 'webpack.config.js' # Name of webpack configuration file
     includeModules: true # Node modules configuration for packaging
     keepOutputDirectory: true
     packager: 'npm' # Packager that will be used to package your external modules
-    excludeFiles:
-      - src/**/*.spec.ts # Provide a glob for files to ignore
-      - test
+    excludeFiles: src/**/*.spec.ts # Provide a glob for files to ignore
 
-  appName: twitter-bot
   stage: ${opt:stage, 'development'}
   region: ${opt:region, 'us-east-1'}
-  10sCron: cron(*/10 * * * * *)
-  15sCron: cron(*/15 * * * * *)
+  name: twitter-bot
+  eventBusName: twitter-bot-event-bus
+  botEventValues: ${file(./script/eventBridgeValueSetter.js)}
+
+  10minsRate: rate(10 minutes)
+  20minsRate: rate(20 minutes)
+  1minsCron: cron(0/1 * * * ? *)
+  2minsCron: cron(0/2 * * * ? *)
+  1minsRate: rate(1 minutes)
+  2minsRate: rate(2 minutes)
 
 provider:
   name: aws
   stage: ${self:custom.stage}
   runtime: nodejs20.x
-  region: us-east-1
-  architecture: arm64
+  region: ${self:custom.region}
   deploymentBucket:
     name: ${self:service}
-  deploymentPrefix: ${self:custom.appName}
+  deploymentPrefix: ${self:custom.name}
+  architecture: arm64
 
   # Optional CloudFormation tags to apply to APIs and functions
   tags:
-    appName: ${self:custom.appName}
+    appName: ${self:custom.name}
 
   # Optional CloudFormation tags to apply to the stack
   stackTags:
-    appName: ${self:custom.appName}
+    appName: ${self:custom.name}
 
-  # httpApi:
-  #   # https://www.serverless.com/framework/docs/providers/aws/events/http-api
-  #   shouldStartNameWithService: true
-  #   cors:
-  #     allowedOrigins: "*"
-  #     allowedHeaders: "*"
-  #     allowedMethods: "*"
-  #     allowCredentials: false
+  httpApi:
+    # https://www.serverless.com/framework/docs/providers/aws/events/http-api
+    shouldStartNameWithService: true
+    cors:
+      allowedOrigins: '*'
+      allowedHeaders:
+        - Content-Type
+        - Accept
+        - X-Amz-Date
+        - Authorization
+        - X-Api-Key
+        - X-Amz-Security-Token
+        - X-Amz-User-Agent
+      allowedMethods: '*'
+      allowCredentials: false
 
   environment:
-    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     NODE_ENV: ${self:custom.stage}
     NODE_OPTIONS: '--enable-source-maps'
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    BOT_API_SECRET_KEY: ${env:BOT_API_SECRET_KEY}
 
   # Below asigned lambda function the permission use other AWS services
   iam:
@@ -73,23 +86,49 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource: 'arn:aws:dynamodb:us-east-1:*:*'
+        - Effect: "Allow"
+          Action:
+            - "lambda:*"
+          Resource: '*'
+        - Effect: "Allow"
+          Action:
+            - "events:*"
+          Resource: '*'
 
-# https://github.com/mnapoli/externals/blob/master/serverless.yml
+# The "Resources" your "Functions" use. Raw AWS CloudFormation goes in here.
+# resources:
+#   Resources:
+#     TwitterBotEventBus:
+#       Type: AWS::Events::EventBus
+#       Properties:
+#         Name: twitter-bot-event-bus
+
+#     usersTable:
+#       Type: AWS::DynamoDB::Table
+#       Properties:
+#         TableName: usersTable
+#         AttributeDefinitions:
+#           - AttributeName: email
+#             AttributeType: S
+#         KeySchema:
+#           - AttributeName: email
+#             AttributeType: S
+#             KeyType: HASH
+#         BillingMode: PAY_PER_REQUEST
+
 functions:
-  main-handler:
+  mainHandler:
     name: ${self:service}-${self:custom.stage}
-    handler: serverless.handler
+    handler: dist/serverless.handler
     timeout: 15
     events:
-      # - httpApi: "*"
-      # - httpApi:
-      #     path: /{proxy+}
-      #     method: any
-
-      - schedule:
-          rate: ${self:custom.10sCron}
-          input:
-            # key1: value1
-            # key2: value2
-            stageParams:
-              stage: ${self:custom.stage}
+      - httpApi:
+          path: /{proxy+}
+          method: any
+      - eventBridge:
+          # eventBus: ${self:custom.eventBusName} # default is no name added
+          schedule: ${self:custom.1minsCron}
+          input: ${self:custom.botEventValues.sola-bot}
+          retryPolicy:
+            maximumEventAge: 3600
+            maximumRetryAttempts: 0

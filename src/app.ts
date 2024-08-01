@@ -4,10 +4,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 import helmet from 'helmet';
 import morgan from "morgan";
+import { getCurrentInvoke } from '@codegenie/serverless-express';
 
 import { AppModule } from './app.module';
 import { AllExceptionFilter, HttpExceptionFilter } from './filter';
-import { getCurrentInvoke } from '@vendia/serverless-express';
 
 
 export async function bootstrapApplication() {
@@ -23,9 +23,7 @@ export async function bootstrapApplication() {
 	morgan.token('id', request => {
 		return getCurrentInvoke().event?.requestContext?.requestId || Date.now().toString();
 	});
-	morgan.token('invocationId', request => {
-		return getCurrentInvoke().context?.awsRequestId;
-	});
+	morgan.token('invocationId', request => getCurrentInvoke().context?.awsRequestId);
 	application.use(morgan('LOG => :id | :invocationId | :date[iso] | :method | :status | :url - :total-time ms'));
 	return { application };
 }

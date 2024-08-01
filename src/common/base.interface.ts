@@ -1,14 +1,57 @@
-import { DefinedAppEnvironmentType } from "./base.constant";
+import { NativeAttributeValue } from "@aws-sdk/lib-dynamodb";
 
-export interface IEnvronmentVariable {
-	AWS_REGION: string;
-	AWS_ACCESS_KEY_ID: string;
-	TWITTER_APP_KEY: string;
-	TWITTER_APP_SECRET: string;
-	TWITTER_ACCESS_TOKEN: string;
-	TWITTER_ACCESS_SECRET: string;
-	AWS_SECRET_ACCESS_KEY: string;
-	NODE_ENV: DefinedAppEnvironmentType;
+import { ApplicationEnvironmentType, EntityNameType } from "./base.constant";
+import { APIGatewayProxyEventV2, Context, EventBridgeEvent } from "aws-lambda";
+
+export interface IBaseId {
+	id: string;
 }
 
-export type ObjectType = Record<string, any>;
+export interface IBaseName {
+	name: string;
+}
+
+export interface IBaseCreateEditDate {
+	createdAtDate: string;
+	lastModifiedAtDate?: string;
+}
+
+export interface IBaseCreatorEditorId {
+	creatorUserId?: string;
+	creator?: any;
+	lastModifierUserId?: string;
+	lastModifier?: any;
+}
+
+export interface IBaseIsDelete {
+	isDeleted: boolean;
+	deleteAtDate?: string;
+	deleteUserId?: string;
+	deleter?: any;
+}
+
+export interface IBaseEntityName {
+	entityName: EntityNameType;
+}
+
+export interface IErrorResponse {
+	statusCode: number;
+	timestamp: string,
+	method: string;
+	path: string;
+	message: string;
+}
+
+export interface IEnvronmentVariable {
+	NODE_ENV: ApplicationEnvironmentType;
+	BOT_API_SECRET_KEY: string;
+}
+
+export interface IEventBridgeEvent extends EventBridgeEvent<string, ObjectType> { }
+
+export type ObjectType = Record<string, NativeAttributeValue>;
+
+export interface ICurrentInvocation{
+	event: APIGatewayProxyEventV2;
+	context:Context
+}

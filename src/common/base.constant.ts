@@ -1,10 +1,12 @@
-export enum DefinedAppEnvironmentEnum {
+export const CUSTOM_ID_DIVIDER = ':::';
+
+export enum ApplicationEnvironmentEnum {
 	DEVELOPMENT = 'development',
 	PRODUCTION = 'production',
 	STAGING = 'staging'
 }
 
-export type DefinedAppEnvironmentType = `${DefinedAppEnvironmentEnum}`;
+export type ApplicationEnvironmentType = `${ApplicationEnvironmentEnum}`;
 
 export enum ResponseMessageEnum {
 	INTERNAL_SERVER_ERROR = 'Error occured in the server!',
@@ -19,7 +21,18 @@ export enum ResponseMessageEnum {
 	UNAUTHENTICATED = 'You are not authenticated. Kindly login!',
 	SUSPEND = 'Suspended successfully!',
 	UNSUSPENDED = 'Unsuspended successfully!',
-	NO_BUSINESS_FOUND = 'No business created/selected!',
-	NO_USER_EXIST = 'Can\'t verify user account existence!',
 	INVALID_TOKEN = 'Invalid token!'
+}
+
+export enum EntityNameEnum {
+	BOT = 'bot',
+	FOOTBALL_NEWS = 'football-news',
+	GOOGLE_TREND = 'google-trend',
+	USER = 'user'
+}
+export type EntityNameType = `${EntityNameEnum}`;
+
+export enum DefinedGSIName {
+	getItemsByEntityNameCreatedDateIndex = 'entityName_createdAtDate_index',
+	getItemsByEntityBotCreatedDateIndex = 'entityNameBot_createdAtDate_index'
 }

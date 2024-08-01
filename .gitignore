@@ -1,11 +1,16 @@
 # compiled output
 /dist
+/build
 /node_modules
 
 # environment config
 .env
 .serverless
 .webpack
+
+.cdk.staging
+cdk.out
+
 
 # Logs
 logs

@@ -1,5 +1,5 @@
 import { APIGatewayProxyCallbackV2, APIGatewayProxyEventV2, APIGatewayProxyHandlerV2, Context } from 'aws-lambda';
-import serverlessExpress from '@vendia/serverless-express';
+import serverlessExpress from '@codegenie/serverless-express';
 
 import { bootstrapApplication } from './app';
 
@@ -12,7 +12,9 @@ async function bootstrapLambdaApi(): Promise<APIGatewayProxyHandlerV2<never>> {
 		const expressInstance = application.getHttpAdapter().getInstance();
 		serverInstance = serverlessExpress({
 			app: expressInstance,
-			eventSourceRoutes: { AWS_EVENTBRIDGE: 'look-up' }
+			eventSourceRoutes: {
+				AWS_EVENTBRIDGE: '/api/look-up'
+			}
 		});
 	}
 	return serverInstance;
@@ -21,5 +23,5 @@ async function bootstrapLambdaApi(): Promise<APIGatewayProxyHandlerV2<never>> {
 export async function handler(event: APIGatewayProxyEventV2, context: Context, callback: APIGatewayProxyCallbackV2) {
 	context.callbackWaitsForEmptyEventLoop = false;
 	const server = await bootstrapLambdaApi();
-	return server(event, context, callback);
+	return await server(event, context, callback);
 }

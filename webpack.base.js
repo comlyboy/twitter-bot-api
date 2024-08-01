@@ -20,6 +20,7 @@ const config = merge(base, {
 			{
 				test: /\.ts$/,
 				loader: 'ts-loader',
+				include: /src/,
 				exclude: /node_modules/,
 			},
 			{
@@ -37,10 +38,7 @@ const config = merge(base, {
 		__dirname: true,
 		__filename: true,
 	},
-	externals: [
-		nodeExternals(),
-		'aws-sdk'
-	],
+	externals: [nodeExternals()],
 });
 
 module.exports = config;
